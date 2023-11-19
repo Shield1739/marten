@@ -40,7 +40,7 @@ public class UniqueUser
 
     public string UserName { get; set; }
 
-    [UniqueIndex(IndexType = UniqueIndexType.DuplicatedField)]
+    [UniqueIndex(IndexType = UniqueIndexType.DuplicatedField, IndexName = "email")]
     public string Email { get; set; }
 
     [UniqueIndex(IndexName = "fullname")] public string FirstName { get; set; }
@@ -90,6 +90,7 @@ public class UniqueIndexTests: OneOffConfigurationsContext
         catch (DocumentAlreadyExistsException exception)
         {
             ((PostgresException)exception.InnerException)?.SqlState.ShouldBe(UniqueSqlState);
+            exception.ConstraintName.ShouldBe("fullname");
         }
     }
 
@@ -116,6 +117,7 @@ public class UniqueIndexTests: OneOffConfigurationsContext
         catch (DocumentAlreadyExistsException exception)
         {
             ((PostgresException)exception.InnerException)?.SqlState.ShouldBe(UniqueSqlState);
+            exception.ConstraintName.ShouldBe("email");
         }
     }
 
